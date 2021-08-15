@@ -1,0 +1,92 @@
+def blackjack_hand_greater_than(hand_1, hand_2):
+    """
+    Return True if hand_1 beats hand_2, and False otherwisde.
+    
+    In order for hand_1 to beat hand_2 the following must be true:
+    - The total of hand_1 must not exceed 21
+    - The total of hand_1 must exceed the total of hand_2 OR hand_2's total must exceed 21
+    
+    Hands are represented as a list of cards. Each card is represented by a string.
+    
+    When adding up a hand's total, cards with numbers count for that many points. Face
+    cards ('J', 'Q', and 'K') are worth 10 points. 'A' can count for 1 or 11.
+    
+    When determining a hand's total, you should try to count aces in the way that 
+    maximizes the hand's total without going over 21. e.g. the total of ['A', 'A', '9'] is 21,
+    the total of ['A', 'A', '9', '3'] is 14.
+    
+    Examples:
+    >>> blackjack_hand_greater_than(['K'], ['3', '4'])
+    True
+    >>> blackjack_hand_greater_than(['K'], ['10'])
+    False
+    >>> blackjack_hand_greater_than(['K', 'K', '2'], ['3'])
+    False
+    """
+    hand_1_values = []
+    hand_2_values = []
+    As_1 = 0
+    As_2 = 0
+    hand_1_best = {}
+    hand_2_best = {}
+    hand_1_temp = []
+    hand_2_temp = []
+    
+    for card in range(len(hand_1)):
+        if hand_1[card] == "K" or hand_1[card] == "Q" or hand_1[card] == "J":
+            hand_1[card] = 10
+        if hand_1[card] == "A":
+            As_1 += 1
+            hand_1[card] = 1
+        elif hand_1[card]:
+            hand_1[card] = int(hand_1[card])
+            
+    for card2 in range(len(hand_2)):
+        if hand_2[card2] == "K" or hand_2[card2] == "Q" or hand_2[card2] == "J":
+            hand_2[card2] = 10
+        if hand_2[card2] == "A":
+            As_2 += 1
+            hand_2[card2] = 1
+        elif hand_2[card2]:
+            hand_2[card2] = int(hand_2[card2])
+            
+    hand_1_values.append(sum(hand_1))
+    hand_2_values.append(sum(hand_2))
+
+    i = 0
+    while i < As_1:
+        hand_1_values.append(sum(hand_1)+(10*(i+1)))
+        i += 1
+    j = 0
+    while j < As_2:
+        hand_2_values.append(sum(hand_2)+(10*(j+1)))
+        j += 1
+    
+    hand_1_values.sort()
+    hand_2_values.sort()
+
+    for value in range(len(hand_1_values)):
+        if hand_1_values[value] <= 21:
+            hand_1_temp.append(hand_1_values[value])            
+        elif hand_1_values[value] > 21:
+            hand_1_temp.append(0)
+        
+    for value2 in range(len(hand_2_values)):
+        if hand_2_values[value2] <= 21:
+            hand_2_temp.append(hand_2_values[value2])
+        elif hand_2_values[value2] > 21:
+            hand_2_temp.append(0)
+            
+    hand_1_max = max(hand_1_temp)
+    hand_2_max = max(hand_2_temp)
+
+#    print(hand_1_max)
+#    print(hand_2_max)
+    
+    if hand_1_max == hand_2_max:
+        print("Push!")
+    
+    return hand_1_max > hand_2_max
+
+# Check your answer
+q3.check()
